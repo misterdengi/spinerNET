@@ -1,187 +1,156 @@
-# 🌌 SpinerNET — VPN Client
+<div align="center">
 
-> Современный VPN клиент для Windows с поддержкой всех протоколов.
-> Стиль: тёмный космос. Без компромиссов.
+<img src="renderer/assets/icon.png" width="120" alt="SpinerNET Logo" />
+
+# SpinerNET
+
+**Современный VPN-клиент для Windows на базе Xray-core**
+
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue?style=flat-square&logo=windows)](https://github.com/misterdengi/spinernet/releases)
+[![Electron](https://img.shields.io/badge/Electron-28-47848F?style=flat-square&logo=electron)](https://www.electronjs.org/)
+[![Xray-core](https://img.shields.io/badge/Core-Xray--core-blueviolet?style=flat-square)](https://github.com/XTLS/Xray-core)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/misterdengi/spinernet?style=flat-square)](https://github.com/misterdengi/spinernet/releases/latest)
+
+[**Скачать**](#-установка) · [Поддерживаемые протоколы](#-протоколы) · [Как использовать](#-как-добавить-серверы)
+
+</div>
 
 ---
 
-## 🚀 Быстрый запуск (Development)
+## ✨ Возможности
+
+- 🔒 **Поддержка всех актуальных протоколов** — VMess, VLESS, Trojan, Shadowsocks, Hysteria2, TUIC, WireGuard
+- 📋 **Subscription-ссылки** — автообновление серверов по URL подписки
+- 📥 **Импорт из буфера обмена** — вставь ключи одной кнопкой
+- 🖥️ **Системный трей** — приложение живёт в трее, не мешает работе
+- 🌑 **Тёмный UI** — минималистичный дизайн без лишнего
+- ⚡ **Встроенный Xray-core** — не нужно ничего скачивать отдельно
+
+---
+
+## 📦 Установка
+
+Перейди в [**Releases**](https://github.com/misterdengi/spinernet/releases/latest) и скачай:
+
+| Файл | Описание |
+|------|----------|
+| `SpinerNET Setup x.x.x.exe` | Установщик |
+
+> **Примечание:** Windows SmartScreen может предупредить при запуске — нажми «Подробнее → Всё равно запустить». Это стандартное поведение для неподписанных приложений.
+
+---
+
+## 📡 Протоколы
+
+| Протокол | Статус | Описание |
+|----------|:------:|----------|
+| VLESS | ✅ | Поддержка Reality, XTLS, WS, gRPC |
+| VMess | ✅ | V2Ray-стандарт, WS / gRPC / h2 |
+| Trojan | ✅ | Маскировка под HTTPS трафик |
+| Shadowsocks | ✅ | SS / SS2022, AEAD-шифрование |
+| Hysteria2 | ✅ | QUIC, высокая скорость |
+| TUIC | ✅ | QUIC, низкая задержка |
+| ShadowsocksR | ✅ | Импорт SSR-ключей |
+| WireGuard | ✅ | Импорт WG-конфигов |
+
+---
+
+## 🚀 Как добавить серверы
+
+### Способ 1 — Subscription URL
+1. Открой вкладку **Subscriptions**
+2. Вставь ссылку от своего провайдера
+3. Нажми **Add** → серверы загрузятся автоматически
+
+### Способ 2 — Импорт ключей
+Поддерживаются ключи в форматах:
+```
+vless://uuid@host:443?type=ws&security=tls#MyServer
+vmess://base64encoded...
+trojan://pass@host:443?sni=host.com#Trojan
+ss://method:pass@host:8388#SS
+hysteria2://auth@host:443?sni=host.com#Hy2
+```
+Вставь их в **Subscriptions → Import Config Keys** (по одному на строку) и нажми **Import**.
+
+### Способ 3 — Буфер обмена
+Скопируй ключи → нажми **Import Clipboard** на странице серверов.
+
+---
+
+## 🛠️ Сборка из исходников
 
 ### Требования
-- **Node.js** v18+ → https://nodejs.org
-- **npm** (идёт вместе с Node.js)
-- **Windows 10/11** (для полноценной работы)
-
-### Шаги
+- **Node.js** v18+ — [nodejs.org](https://nodejs.org)
+- **Windows 10 / 11**
 
 ```bash
-# 1. Перейди в папку проекта
+# Клонировать репозиторий
+git clone https://github.com/misterdengi/spinernet.git
 cd spinernet
 
-# 2. Установи зависимости
+# Установить зависимости
 npm install
 
-# 3. Запусти приложение
+# Запустить в режиме разработки
 npm start
-```
 
-Готово! Приложение откроется.
-
----
-
-## 📦 Сборка .exe для Windows
-
-```bash
-# Установи зависимости (если ещё не)
-npm install
-
-# Собери portable .exe или installer
+# Или собрать установщик
 npm run build
 ```
 
-После сборки файлы будут в папке `dist/`:
-- `SpinerNET Setup x.x.x.exe` — установщик (NSIS)
-- `SpinerNET x.x.x.exe` — portable версия
+Готовые файлы появятся в папке `dist/`.
 
----
-
-## 🛠️ Структура проекта
+### Структура проекта
 
 ```
 spinernet/
-├── main.js           ← Electron main process (логика окна, VPN, IPC)
-├── preload.js        ← Безопасный мост renderer ↔ main
-├── package.json      ← Зависимости и скрипты
+├── main.js              ← Main process: окно, VPN-логика, IPC
+├── preload.js           ← Безопасный мост renderer ↔ main
+├── package.json
+├── bin/
+│   ├── xray.exe         ← Xray-core (включён в установщик)
+│   └── wintun.dll
 └── renderer/
-    ├── index.html    ← Главный UI
-    ├── css/
-    │   └── app.css   ← Весь стиль (тёмный космос)
-    └── js/
-        └── app.js    ← Вся логика UI
+    ├── index.html
+    ├── css/app.css      ← Стили
+    └── js/app.js        ← Логика UI
 ```
 
 ---
 
-## 📡 Поддерживаемые протоколы
-
-| Протокол | Статус | Описание |
-|----------|--------|----------|
-| VMess | ✅ | V2Ray стандарт, поддержка WS/gRPC/h2 |
-| VLESS | ✅ | Lightweight, поддержка Reality, XTLS |
-| Trojan | ✅ | Маскировка под HTTPS |
-| Shadowsocks | ✅ | SS/SS2022, AEAD шифрование |
-| Hysteria2 | ✅ | QUIC-based, высокая скорость |
-| TUIC | ✅ | QUIC-based, низкая задержка |
-| ShadowsocksR | ✅ (import) | Legacy SSR |
-| WireGuard | ✅ (import) | Fast VPN протокол |
-
----
-
-## 🔑 Как добавить серверы
-
-### Способ 1: Subscription Link
-1. Перейди в **Subscriptions**
-2. Вставь URL подписки (например: `https://your-provider.com/sub?token=xxx`)
-3. Нажми **Add** → серверы загрузятся автоматически
-
-### Способ 2: Import Config Keys
-1. **Subscriptions → Import Config Keys**
-2. Вставь ключи (по одному на строку):
-```
-vmess://eyJhZGQiOiIxMjMuNDU2Ljc4LjkiLCJwb3J0IjoiNDQzIi4uLn0=
-vless://uuid@server.com:443?type=ws&security=tls&sni=server.com#MyServer
-trojan://password@server.com:443?sni=server.com#Trojan
-ss://aes-256-gcm:password@server.com:8388#SS
-hysteria2://auth@server.com:443?sni=server.com#Hy2
-```
-3. Нажми **Import**
-
-### Способ 3: Clipboard
-- Скопируй ключи → нажми **Import Clipboard** на странице Servers
-
-### Способ 4: Вручную
-- **Servers → Add Server** → заполни форму для нужного протокола
-
----
-
-## ⚙️ Интеграция с реальным ядром (Xray / sing-box)
-
-Для реального VPN подключения нужно:
-
-1. Скачать **Xray-core** или **sing-box**:
-   - Xray: https://github.com/XTLS/Xray-core/releases
-   - sing-box: https://github.com/SagerNet/sing-box/releases
-
-2. Положить `xray.exe` или `sing-box.exe` в папку:
-   ```
-   spinernet/bin/xray.exe
-   spinernet/bin/sing-box.exe
-   ```
-
-3. В `main.js` найти функцию `connectVPN()` и заменить симуляцию:
-   ```javascript
-   function connectVPN(config) {
-     // Генерируй JSON конфиг для xray/sing-box из config
-     const configPath = path.join(DATA_DIR, 'runtime.json');
-     fs.writeFileSync(configPath, JSON.stringify(generateXrayConfig(config)));
-     
-     vpnProcess = spawn(path.join(__dirname, 'bin/xray.exe'), [
-       'run', '-config', configPath
-     ]);
-     
-     // ... обработка stdout/stderr
-   }
-   ```
-
----
-
-## 🎨 Кастомизация
-
-### Цвета (CSS переменные в `renderer/css/app.css`):
-```css
-:root {
-  --purple: #a855f7;    /* Основной акцент */
-  --green: #10b981;     /* Connected / успех */
-  --amber: #f59e0b;     /* Предупреждения */
-  --red: #ef4444;       /* Ошибки / disconnect */
-  --bg-base: #07070d;   /* Основной фон */
-}
-```
-
----
-
-## 📋 npm команды
+## ⚙️ Настройка
 
 | Команда | Действие |
-|---------|---------|
+|---------|----------|
 | `npm start` | Запустить приложение |
 | `npm run dev` | Запустить с DevTools |
-| `npm run build` | Собрать для Windows |
-| `npm run build:all` | Собрать для всех платформ |
+| `npm run build` | Собрать для Windows (NSIS + portable) |
 
 ---
 
-## 🐛 Решение проблем
+## 🐛 Частые проблемы
 
-**Приложение не запускается:**
+**Приложение не запускается**
 ```bash
-# Удали node_modules и переустанови
-rm -rf node_modules
-npm install
-npm start
+rm -rf node_modules && npm install && npm start
 ```
 
-**Ошибка при сборке:**
-```bash
-npm install --save-dev electron-builder
-npm run build
-```
+**SmartScreen блокирует установщик**  
+Нажми «Подробнее → Всё равно запустить» — это ожидаемо для неподписанных сборок.
 
-**Electron не найден:**
-```bash
-npm install --save-dev electron
-```
+**VPN не подключается**  
+Убедись, что антивирус не блокирует `xray.exe` и `wintun.dll`. Добавь папку приложения в исключения.
 
 ---
 
-Made with 🌌 by SpinerNET
+## 📄 Лицензия
+
+MIT © SpinerNET
+
+---
+
+<div align="center">
+  <sub>Built with Electron · Powered by Xray-core</sub>
+</div>
